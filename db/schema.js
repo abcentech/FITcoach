@@ -1,14 +1,14 @@
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { pgTable, text, integer, real, jsonb } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
-export const users = sqliteTable('users', {
+export const users = pgTable('users', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const portfolios = sqliteTable('portfolios', {
+export const portfolios = pgTable('portfolios', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
@@ -18,7 +18,7 @@ export const portfolios = sqliteTable('portfolios', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const weeks = sqliteTable('weeks', {
+export const weeks = pgTable('weeks', {
   id: text('id').primaryKey(),
   userId: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
   portfolioId: text('portfolio_id').references(() => portfolios.id, { onDelete: 'cascade' }),
@@ -30,32 +30,32 @@ export const weeks = sqliteTable('weeks', {
   sourceType: text('sourceType').notNull().default('sample'),
   brokerNet: real('brokerNet'),
   createdAt: text('createdAt').default(sql`CURRENT_TIMESTAMP`),
-  screenshots: text('screenshots', { mode: 'json' }), // JSON string of { pnl, chartH1, chartM15 } paths
-  summary: text('summary', { mode: 'json' }), // Storing summarized stats if needed
-  coach: text('coach', { mode: 'json' }), // Storing coach verdict if needed
+  screenshots: jsonb('screenshots'), // Native JSONB in Postgres
+  summary: jsonb('summary'), 
+  coach: jsonb('coach'), 
 });
 
-export const playbook = sqliteTable('playbook', {
+export const playbook = pgTable('playbook', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   description: text('description'),
-  rules: text('rules', { mode: 'json' }), // JSON string array of rules
+  rules: jsonb('rules'), 
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const dailyJournals = sqliteTable('daily_journals', {
+export const dailyJournals = pgTable('daily_journals', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: text('date').notNull(), // YYYY-MM-DD
   mood: text('mood'),
   rating: integer('rating'), // 1-5 stars
   notes: text('notes'),
-  screenshots: text('screenshots', { mode: 'json' }), // JSON string array of daily screenshots
+  screenshots: jsonb('screenshots'), 
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const shareTokens = sqliteTable('share_tokens', {
+export const shareTokens = pgTable('share_tokens', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   portfolioId: text('portfolio_id').references(() => portfolios.id, { onDelete: 'cascade' }), // optional
@@ -64,7 +64,7 @@ export const shareTokens = sqliteTable('share_tokens', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const trades = sqliteTable('trades', {
+export const trades = pgTable('trades', {
   id: text('id').primaryKey(),
   weekId: text('week_id').notNull().references(() => weeks.id, { onDelete: 'cascade' }),
   tradeId: integer('trade_id').notNull(), // The sequential ID # in the UI
@@ -89,16 +89,16 @@ export const trades = sqliteTable('trades', {
   month: text('month'),
   year: integer('year'),
   compliance: real('compliance'), // Rule compliance percentage (0 to 1)
-  checkedRules: text('checked_rules', { mode: 'json' }), // JSON string array of rules ticked
+  checkedRules: jsonb('checked_rules'), 
 });
 
-export const sessions = sqliteTable('sessions', {
+export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   expiresAt: integer('expires_at').notNull(),
 });
 
-export const journalFolders = sqliteTable('journal_folders', {
+export const journalFolders = pgTable('journal_folders', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
@@ -106,14 +106,14 @@ export const journalFolders = sqliteTable('journal_folders', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const journalTags = sqliteTable('journal_tags', {
+export const journalTags = pgTable('journal_tags', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   color: text('color'),
 });
 
-export const journalNotes = sqliteTable('journal_notes', {
+export const journalNotes = pgTable('journal_notes', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   folderId: text('folder_id').references(() => journalFolders.id, { onDelete: 'cascade' }),
@@ -124,12 +124,12 @@ export const journalNotes = sqliteTable('journal_notes', {
   updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const noteTags = sqliteTable('note_tags', {
+export const noteTags = pgTable('note_tags', {
   noteId: text('note_id').notNull().references(() => journalNotes.id, { onDelete: 'cascade' }),
   tagId: text('tag_id').notNull().references(() => journalTags.id, { onDelete: 'cascade' }),
 });
 
-export const preMarketPlans = sqliteTable('pre_market_plans', {
+export const preMarketPlans = pgTable('pre_market_plans', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: text('date').notNull(),
@@ -148,7 +148,7 @@ export const preMarketPlans = sqliteTable('pre_market_plans', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const tradeApprovals = sqliteTable('trade_approvals', {
+export const tradeApprovals = pgTable('trade_approvals', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: text('date').notNull(),
@@ -161,7 +161,7 @@ export const tradeApprovals = sqliteTable('trade_approvals', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const riskSettings = sqliteTable('risk_settings', {
+export const riskSettings = pgTable('risk_settings', {
   portfolioId: text('portfolio_id').primaryKey().references(() => portfolios.id, { onDelete: 'cascade' }),
   maxDailyLoss: real('max_daily_loss').default(500),
   maxWeeklyDrawdown: real('max_weekly_drawdown').default(1500),
@@ -174,7 +174,7 @@ export const riskSettings = sqliteTable('risk_settings', {
   lastUpdated: text('last_updated').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const preTradeCheckins = sqliteTable('pre_trade_checkins', {
+export const preTradeCheckins = pgTable('pre_trade_checkins', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: text('date').notNull(),
@@ -191,7 +191,7 @@ export const preTradeCheckins = sqliteTable('pre_trade_checkins', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-export const dailyReviews = sqliteTable('daily_reviews', {
+export const dailyReviews = pgTable('daily_reviews', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: text('date').notNull(),

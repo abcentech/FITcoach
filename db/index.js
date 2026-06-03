@@ -1,10 +1,8 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 import * as schema from './schema';
-import path from 'path';
 
-// Create the SQLite database file in the root of the project
-const dbPath = path.join(process.cwd(), 'sqlite.db');
-const sqlite = new Database(dbPath);
+const connectionString = process.env.DATABASE_URL || "postgres://localhost:5432/fitcoach";
+const client = postgres(connectionString, { ssl: connectionString.includes('neon') ? 'require' : false });
 
-export const db = drizzle(sqlite, { schema });
+export const db = drizzle(client, { schema });
