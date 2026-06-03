@@ -95,7 +95,7 @@ export const trades = pgTable('trades', {
 export const sessions = pgTable('sessions', {
   id: text('id').primaryKey(),
   userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  expiresAt: integer('expires_at').notNull(),
+  expiresAt: text('expires_at').notNull(),
 });
 
 export const journalFolders = pgTable('journal_folders', {

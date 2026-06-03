@@ -28,7 +28,7 @@ export async function createSession(userId) {
   await db.insert(sessions).values({
     id: sessionId,
     userId,
-    expiresAt,
+    expiresAt: String(expiresAt),
   });
 
   const cookieStore = await cookies();
@@ -55,7 +55,7 @@ export async function getCurrentUser() {
   if (!session) return null;
 
   // Check expiration
-  if (Date.now() > session.expiresAt) {
+  if (Date.now() > Number(session.expiresAt)) {
     // Delete expired session
     await db.delete(sessions).where(eq(sessions.id, sessionId));
     cookieStore.delete(SESSION_COOKIE_NAME);

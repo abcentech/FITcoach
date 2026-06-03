@@ -47,6 +47,9 @@ async function migrate() {
   console.log("🚀 Starting database migration from SQLite to Neon PostgreSQL...");
 
   try {
+    console.log("Wiping existing database entries on Neon to prevent unique constraints conflicts...");
+    await sql`TRUNCATE TABLE users CASCADE`;
+
     // ---- USERS ----
     console.log("Migrating users...");
     const sqliteUsers = sqlite.prepare("SELECT * FROM users").all();
@@ -72,18 +75,28 @@ async function migrate() {
     console.log(`✓ Migrated ${sqlitePortfolios.length} portfolios.`);
 
     // ---- WEEKS ----
-    console.log("Migrating weeks...");
+    console.log("Migrating weeks in batches...");
     const sqliteWeeks = sqlite.prepare("SELECT * FROM weeks").all();
-    for (const w of sqliteWeeks) {
-      await sql`
+    const weekChunkSize = 50;
+    for (let i = 0; i < sqliteWeeks.length; i += weekChunkSize) {
+      const chunk = sqliteWeeks.slice(i, i + weekChunkSize);
+      const values = [];
+      const args = [];
+      for (let j = 0; j < chunk.length; j++) {
+        const w = chunk[j];
+        args.push(
+          w.id, w.user_id, w.portfolio_id || null, w.week, w.month, w.year, 
+          w.dateRange, w.status, w.sourceType, w.brokerNet, w.createdAt, 
+          JSON.stringify(safeParse(w.screenshots)), JSON.stringify(safeParse(w.summary)), JSON.stringify(safeParse(w.coach))
+        );
+        const offset = j * 14;
+        values.push(`($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11}, $${offset + 12}::jsonb, $${offset + 13}::jsonb, $${offset + 14}::jsonb)`);
+      }
+      await sql.unsafe(`
         INSERT INTO weeks (id, user_id, portfolio_id, week, month, year, "dateRange", status, "sourceType", "brokerNet", "createdAt", screenshots, summary, coach)
-        VALUES (
-          ${w.id}, ${w.user_id}, ${w.portfolio_id || null}, ${w.week}, ${w.month}, ${w.year}, 
-          ${w.dateRange}, ${w.status}, ${w.sourceType}, ${w.brokerNet}, ${w.createdAt}, 
-          ${sql.json(safeParse(w.screenshots))}, ${sql.json(safeParse(w.summary))}, ${sql.json(safeParse(w.coach))}
-        )
+        VALUES ${values.join(', ')}
         ON CONFLICT (id) DO NOTHING
-      `;
+      `, args);
     }
     console.log(`✓ Migrated ${sqliteWeeks.length} weeks.`);
 
@@ -126,21 +139,31 @@ async function migrate() {
     console.log(`✓ Migrated ${sqliteTokens.length} share tokens.`);
 
     // ---- TRADES ----
-    console.log("Migrating trades...");
+    console.log("Migrating trades in batches...");
     const sqliteTrades = sqlite.prepare("SELECT * FROM trades").all();
-    for (const tr of sqliteTrades) {
-      await sql`
+    const tradeChunkSize = 100;
+    for (let i = 0; i < sqliteTrades.length; i += tradeChunkSize) {
+      const chunk = sqliteTrades.slice(i, i + tradeChunkSize);
+      const values = [];
+      const args = [];
+      for (let j = 0; j < chunk.length; j++) {
+        const tr = chunk[j];
+        args.push(
+          tr.id, tr.week_id, tr.trade_id, tr.dateTime, tr.executionTime, tr.session, tr.symbol, tr.instrument, tr.dir,
+          tr.lot, tr.entry, tr.exit, tr.pnl, tr.high, tr.low, tr.grade, tr.hold, tr.tag, tr.h1, tr.m15,
+          tr.setupType, tr.month, tr.year, tr.compliance, JSON.stringify(safeParse(tr.checkedRules))
+        );
+        const offset = j * 25;
+        values.push(`($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11}, $${offset + 12}, $${offset + 13}, $${offset + 14}, $${offset + 15}, $${offset + 16}, $${offset + 17}, $${offset + 18}, $${offset + 19}, $${offset + 20}, $${offset + 21}, $${offset + 22}, $${offset + 23}, $${offset + 24}, $${offset + 25}::jsonb)`);
+      }
+      await sql.unsafe(`
         INSERT INTO trades (
           id, week_id, trade_id, "dateTime", "executionTime", session, symbol, instrument, dir, 
           lot, entry, exit, pnl, high, low, grade, hold, tag, h1, m15, "setupType", month, year, compliance, checked_rules
         )
-        VALUES (
-          ${tr.id}, ${tr.week_id}, ${tr.trade_id}, ${tr.dateTime}, ${tr.executionTime}, ${tr.session}, ${tr.symbol}, ${tr.instrument}, ${tr.dir}, 
-          ${tr.lot}, ${tr.entry}, ${tr.exit}, ${tr.pnl}, ${tr.high}, ${tr.low}, ${tr.grade}, ${tr.hold}, ${tr.tag}, ${tr.h1}, ${tr.m15}, 
-          ${tr.setupType}, ${tr.month}, ${tr.year}, ${tr.compliance}, ${sql.json(safeParse(tr.checkedRules))}
-        )
+        VALUES ${values.join(', ')}
         ON CONFLICT (id) DO NOTHING
-      `;
+      `, args);
     }
     console.log(`✓ Migrated ${sqliteTrades.length} trades.`);
 
