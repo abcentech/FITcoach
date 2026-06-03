@@ -1,0 +1,40 @@
+{
+  "name": "fitpips-trading-coach",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "node scripts/clean.js",
+    "dev": "node scripts/clean.js && next dev",
+    "build": "node scripts/clean.js && next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tiptap/extension-color": "^3.23.6",
+    "@tiptap/extension-text-align": "^3.23.6",
+    "@tiptap/extension-text-style": "^3.23.6",
+    "@tiptap/extension-underline": "^3.23.6",
+    "@tiptap/pm": "^3.23.6",
+    "@tiptap/react": "^3.23.6",
+    "@tiptap/starter-kit": "^3.23.6",
+    "better-sqlite3": "^12.9.0",
+    "drizzle-orm": "^0.45.2",
+    "lightweight-charts": "^5.2.0",
+    "lucide-react": "^1.17.0",
+    "next": "^15.0.0",
+    "openai": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "uuid": "^14.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.0.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

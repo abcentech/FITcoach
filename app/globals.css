@@ -1,0 +1,354 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-main: #060913;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #cbd5e1;
+  --slate-300: #94a3b8;
+  --slate-400: #64748b;
+  --slate-500: #475569;
+  --slate-600: #334155;
+  --slate-700: #222e4c;
+  --slate-800: #1b253f;
+  --slate-900: #10162b;
+  --slate-950: #0a0e1c;
+}
+
+.light {
+  color-scheme: light;
+  --bg-main: #f8fafc;
+  --slate-950: #ffffff;     /* Card surfaces — pure white */
+  --slate-900: #f8fafc;     /* Recessed panels — near-white */
+  --slate-800: #e2e8f0;     /* Borders — clearly visible gray */
+  --slate-700: #cbd5e1;     /* Secondary borders & dividers */
+  --slate-600: #94a3b8;     /* Tertiary UI lines */
+  --slate-500: #64748b;     /* Muted labels — still readable */
+  --slate-400: #475569;     /* Secondary text — strong */
+  --slate-300: #334155;     /* Body copy */
+  --slate-200: #1e293b;     /* Emphasis text */
+  --slate-100: #0f172a;     /* Headlines — near-black */
+  --slate-50: #020617;      /* Maximum contrast text */
+}
+
+html { 
+  scroll-behavior: smooth; 
+  overflow-y: auto !important;
+  height: 100% !important;
+}
+
+body { 
+  margin: 0; 
+  background: var(--bg-main); 
+  overflow-y: auto !important;
+  height: 100% !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+* { 
+  box-sizing: border-box; 
+}
+
+/* Dynamic theme transitions for premium glassmorphism feel */
+.rounded-3xl, .rounded-2xl, .rounded-xl, header, aside, section, main, div, button, select, input, textarea {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* ── High-Contrast Shadow System (Light Mode) ──────────────────────── */
+.light .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.06) !important;
+}
+.light .shadow {
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.07), 0 1px 2px -1px rgba(15, 23, 42, 0.05) !important;
+}
+.light .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05) !important;
+}
+.light .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04) !important;
+}
+.light .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04) !important;
+}
+.light .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15) !important;
+}
+
+/* Override heavy black shadows in Light Mode */
+.light .shadow-black\/40,
+.light .shadow-black\/30,
+.light .shadow-black\/20,
+.light .shadow-black\/10,
+.light .shadow-black {
+  box-shadow: 0 10px 25px -8px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Force dark text for heading-level slate classes in Light Mode */
+.light .text-slate-950,
+.light .text-slate-900,
+.light .text-slate-800 {
+  color: #0f172a !important;
+}
+
+/* Maintain dark text on amber buttons and tabs in light mode */
+.light .bg-amber-400,
+.light .hover\:bg-amber-300:hover,
+.light .bg-amber-500 {
+  color: #070a13 !important;
+}
+
+/* Maintain light text on green and red buttons and badges in both modes */
+.bg-emerald-500,
+.bg-rose-500,
+.hover\:bg-emerald-400:hover,
+.hover\:bg-rose-400:hover {
+  color: #ffffff !important;
+}
+
+/* ── WCAG AA Financial Colors (Light Mode) ─────────────────────────── */
+.light .text-emerald-400,
+.light .text-emerald-300,
+.light .bg-emerald-500\/5 {
+  color: #059669 !important; /* emerald-600 — crisp, punchy green */
+}
+
+.light .text-rose-400,
+.light .text-rose-300,
+.light .bg-rose-500\/5 {
+  color: #dc2626 !important; /* red-600 — sharp, deep red */
+}
+
+/* ── Sharpen accent text colors in Light Mode ──────────────────────── */
+.light .text-amber-300 {
+  color: #d97706 !important; /* amber-600 */
+}
+
+.light .text-sky-300,
+.light .text-sky-400 {
+  color: #0284c7 !important; /* sky-600 */
+}
+
+.light .text-violet-300,
+.light .text-violet-400 {
+  color: #7c3aed !important; /* violet-600 */
+}
+
+/* ── Strengthen form input borders in Light Mode ───────────────────── */
+.light input,
+.light select,
+.light textarea {
+  border-color: var(--slate-700) !important;
+}
+.light input:focus,
+.light select:focus,
+.light textarea:focus {
+  border-color: #f59e0b !important; /* amber-500 focus ring */
+}
+
+/* Ensure scrollbars are visible and styled */
+::-webkit-scrollbar {
+  width: 10px !important;
+  height: 10px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--slate-950) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f59e0b !important;
+  border-radius: 5px !important;
+  border: 2px solid var(--slate-950) !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d97706 !important;
+}
+
+@media print {
+  header, aside, button { display: none !important; }
+  body, main { 
+    background: white !important; 
+    color: black !important; 
+    height: auto !important; 
+    overflow: visible !important;
+  }
+  .bg-slate-900, .bg-slate-950, .bg-slate-800 { 
+    background: #f8fafc !important; 
+    border-color: #cbd5e1 !important;
+  }
+  .text-white, .text-slate-100, .text-slate-200 { 
+    color: #0f172a !important; 
+  }
+  .text-slate-300, .text-slate-400, .text-slate-500 {
+    color: #475569 !important;
+  }
+  /* Force charts and grids to print correctly */
+  * { 
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+  }
+  .grid { display: block !important; }
+  .grid > * { margin-bottom: 20px !important; }
+}
+
+/* ── Neuro-OS Futuristic Animations & Effects ──────────────────────── */
+
+/* Shifting Ambient Neural Grid Background */
+.neural-ambient-bg {
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.02) 0%, transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.02) 0%, transparent 45%),
+    linear-gradient(rgba(16, 22, 43, 0.25) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 22, 43, 0.25) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+  animation: gridMove 180s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0% 0%, 0% 0%, 0px 0px, 0px 0px; }
+  100% { background-position: 100% 100%, 100% 100%, 1000px 1000px, 1000px 1000px; }
+}
+
+/* Glassmorphic Glow Panels */
+.glass-panel-glow {
+  background: rgba(10, 14, 28, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-glow:hover {
+  border-color: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 12px 36px 0 rgba(245, 158, 11, 0.04), inset 0 0 12px rgba(245, 158, 11, 0.02);
+  transform: translateY(-2px);
+}
+
+/* Dynamic neurochemical liquid flows */
+.neuro-liquid-dopamine {
+  background: linear-gradient(90deg, #d97706, #fbbf24, #f59e0b, #d97706);
+  background-size: 300% 100%;
+  animation: waveFlow 4s ease-in-out infinite;
+}
+
+.neuro-liquid-serotonin {
+  background: linear-gradient(90deg, #059669, #34d399, #10b981, #059669);
+  background-size: 300% 100%;
+  animation: waveFlow 4.5s ease-in-out infinite;
+}
+
+.neuro-liquid-stress {
+  background: linear-gradient(90deg, #dc2626, #f43f5e, #ef4444, #dc2626);
+  background-size: 300% 100%;
+  animation: waveFlow 3.5s ease-in-out infinite;
+}
+
+@keyframes waveFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* HUD System Breathing Glows */
+.hud-breath-green {
+  animation: breathGreen 2.5s ease-in-out infinite alternate;
+}
+
+.hud-breath-amber {
+  animation: breathAmber 2.5s ease-in-out infinite alternate;
+}
+
+.hud-breath-red {
+  animation: breathRed 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes breathGreen {
+  0% { box-shadow: 0 0 4px rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+  100% { box-shadow: 0 0 14px rgba(16, 185, 129, 0.35); border-color: rgba(16, 185, 129, 0.5); }
+}
+
+@keyframes breathAmber {
+  0% { box-shadow: 0 0 4px rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+  100% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.35); border-color: rgba(245, 158, 11, 0.5); }
+}
+
+@keyframes breathRed {
+  0% { box-shadow: 0 0 4px rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+  100% { box-shadow: 0 0 14px rgba(239, 68, 68, 0.35); border-color: rgba(239, 68, 68, 0.5); }
+}
+
+/* Glowing Marching Circuit Channels */
+.circuit-line-pulse {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.02) 20%, rgba(245, 158, 11, 0.5) 50%, rgba(245, 158, 11, 0.02) 80%);
+  background-size: 200% 100%;
+  animation: laserPulse 3s linear infinite;
+}
+
+@keyframes laserPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* OS Motherboard CRT Scanning Overlays */
+.scanlines-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(10, 14, 28, 0) 50%, 
+    rgba(0, 0, 0, 0.08) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 9999;
+  opacity: 0.85;
+}
+
+.scanline-light {
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 158, 11, 0) 0%,
+    rgba(245, 158, 11, 0.015) 50%,
+    rgba(245, 158, 11, 0) 100%
+  );
+  position: fixed;
+  top: 0;
+  left: 0;
+  animation: scanlineScroll 12s linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+@keyframes scanlineScroll {
+  0% { transform: translateY(-100px); }
+  100% { transform: translateY(110vh); }
+}
+
+/* Micro-glitch HUD text feedback on mouse over */
+.glitch-text:hover {
+  animation: glitchText 0.25s linear infinite;
+}
+
+@keyframes glitchText {
+  0% { text-shadow: 1px 1.5px 0 rgba(245, 158, 11, 0.4), -1px -1.5px 0 rgba(16, 185, 129, 0.4); }
+  50% { text-shadow: -1px 1px 0 rgba(245, 158, 11, 0.4), 1px -1px 0 rgba(16, 185, 129, 0.4); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+/* Floating dashboard card elements */
+.float-effect {
+  animation: floatAnim 6s ease-in-out infinite;
+}
+
+@keyframes floatAnim {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
